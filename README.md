@@ -10,7 +10,8 @@ A shopping list, recipe box and todo app built with Vite, React and TypeScript. 
 - Ticked items move to "In the cart"; clear them when you're done
 
 **Recipes**
-- Save recipes with ingredients (one per line), method and an optional link to the original
+- Save recipes with ingredients, method and an optional link to the original
+- Build the ingredient and step lists one entry at a time: type, press Enter, and it's added. Paste a whole list to add every line at once. Click an entry to edit it; reorder or remove steps with the buttons
 - Change the number of servings and all amounts scale (½, ¼ and ⅓ shown as fractions)
 - Add a recipe's ingredients to the shopping list in one tap; duplicates are merged (2 onions + ½ onion = 2½ onions)
 

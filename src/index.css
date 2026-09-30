@@ -254,10 +254,10 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
 
 .recipe-form { display: grid; gap: 16px; }
 .recipe-form label { display: grid; gap: 6px; font-weight: 600; }
+.recipe-form .list-input > label { display: block; }
 .recipe-form label.narrow { max-width: 140px; }
 .recipe-form small { color: var(--muted); font-weight: 400; }
-.recipe-form input,
-.recipe-form textarea {
+.recipe-form input {
   width: 100%;
   padding: 10px 12px;
   border: 1px solid var(--border);
@@ -265,6 +265,59 @@ button:focus-visible, a:focus-visible { outline: 2px solid var(--accent); outlin
   background: var(--surface);
   font-weight: 400;
 }
-.recipe-form textarea { resize: vertical; line-height: 1.5; }
-.recipe-form input:focus,
-.recipe-form textarea:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+.recipe-form input:focus { outline: 2px solid var(--accent); outline-offset: -1px; }
+
+/* List builder: type an entry, press Enter, and it's added as its own row */
+.list-input { display: grid; gap: 8px; }
+.entry-add { display: flex; gap: 8px; }
+.entry-add input { flex: 1; min-width: 0; }
+.entries {
+  display: grid;
+  gap: 4px;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  counter-reset: entry;
+}
+.entries li {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  min-height: 40px;
+  padding: 0 4px 0 12px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+}
+.entries.ordered li { counter-increment: entry; }
+.entries.ordered li::before {
+  content: counter(entry) '.';
+  min-width: 1.5em;
+  color: var(--muted);
+  font-variant-numeric: tabular-nums;
+}
+.entry-text {
+  flex: 1;
+  min-width: 0;
+  padding: 8px 0;
+  border: 0;
+  background: none;
+  text-align: left;
+  overflow-wrap: anywhere;
+  cursor: text;
+}
+.entry-qty { font-weight: 600; }
+.recipe-form .entry-edit { flex: 1; min-width: 0; margin: 4px 0; padding: 6px 8px; }
+.icon {
+  flex: none;
+  width: 32px;
+  height: 32px;
+  border: 0;
+  border-radius: 6px;
+  background: none;
+  color: var(--muted);
+  cursor: pointer;
+}
+.icon:hover:not(:disabled) { background: var(--bg); color: var(--text); }
+.icon:disabled { opacity: 0.3; cursor: default; }
+.remove-entry:hover:not(:disabled) { color: var(--danger); }

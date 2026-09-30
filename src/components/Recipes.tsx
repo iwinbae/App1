@@ -1,6 +1,15 @@
 import { useState, type Dispatch, type FormEvent } from 'react'
-import { formatIngredient, ingredientToLine, parseIngredient, scaleIngredient, type Ingredient } from '../ingredients'
+import {
+  formatIngredient,
+  formatQuantity,
+  ingredientToLine,
+  parseIngredient,
+  scaleIngredient,
+  type Ingredient,
+} from '../ingredients'
+import { splitLines } from '../lists'
 import type { Recipe, RecipeAction, RecipeDraft } from '../recipes'
+import ListInput from './ListInput'
 
 type Props = {
   recipes: Recipe[]
@@ -207,8 +216,10 @@ function RecipeForm({
 }) {
   const [title, setTitle] = useState(recipe?.title ?? '')
   const [servings, setServings] = useState(String(recipe?.servings ?? 4))
-  const [ingredients, setIngredients] = useState(recipe?.ingredients.map(ingredientToLine).join('\n') ?? '')
-  const [steps, setSteps] = useState(recipe?.steps ?? '')
+  const [ingredients, setIngredients] = useState(recipe?.ingredients.map(ingredientToLine) ?? [])
+  const [ingredientDraft, setIngredientDraft] = useState('')
+  const [steps, setSteps] = useState(splitLines(recipe?.steps ?? ''))
+  const [stepDraft, setStepDraft] = useState('')
   const [link, setLink] = useState(recipe?.link ?? '')
 
   function handleSubmit(e: FormEvent) {
@@ -217,12 +228,9 @@ function RecipeForm({
     onSave({
       title,
       servings: Math.max(1, Math.round(Number(servings)) || 1),
-      ingredients: ingredients
-        .split('\n')
-        .map((l) => l.trim())
-        .filter(Boolean)
-        .map(parseIngredient),
-      steps: steps.trim(),
+      // Text still in an input counts too, so nothing typed is lost by pressing Save.
+      ingredients: [...ingredients, ...splitLines(ingredientDraft)].map(parseIngredient),
+      steps: [...steps, ...splitLines(stepDraft)].join('\n'),
       // Only keep web links, so a stray "javascript:" can't end up in an href.
       link: /^https?:\/\//i.test(url) ? url : url ? `https://${url}` : '',
     })
@@ -247,14 +255,44 @@ function RecipeForm({
             onChange={(e) => setServings(e.target.value)}
           />
         </label>
-        <label>
-          Ingredients <small>One per line, e.g. “500 g minced beef” or “2 onions”</small>
-          <textarea id="recipe-ingredients" rows={8} value={ingredients} onChange={(e) => setIngredients(e.target.value)} />
-        </label>
-        <label>
-          Method <small>One step per line</small>
-          <textarea id="recipe-steps" rows={6} value={steps} onChange={(e) => setSteps(e.target.value)} />
-        </label>
+        <ListInput
+          id="recipe-ingredients"
+          label={
+            <>
+              Ingredients <small>Type one and press Enter, e.g. “500 g minced beef”</small>
+            </>
+          }
+          items={ingredients}
+          onItemsChange={setIngredients}
+          draft={ingredientDraft}
+          onDraftChange={setIngredientDraft}
+          placeholder="Add an ingredient"
+          itemName="ingredient"
+          renderItem={(line) => {
+            const ing = parseIngredient(line)
+            const qty = formatQuantity(ing)
+            return (
+              <>
+                {qty && <strong className="entry-qty">{qty}</strong>} {ing.name}
+              </>
+            )
+          }}
+        />
+        <ListInput
+          id="recipe-steps"
+          label={
+            <>
+              Method <small>Add one step at a time</small>
+            </>
+          }
+          items={steps}
+          onItemsChange={setSteps}
+          draft={stepDraft}
+          onDraftChange={setStepDraft}
+          placeholder={steps.length ? `Step ${steps.length + 1}` : 'First step, e.g. “Fry the onion”'}
+          itemName="step"
+          ordered
+        />
         <label>
           Link to original <small>Optional</small>
           <input id="recipe-link" inputMode="url" value={link} onChange={(e) => setLink(e.target.value)} placeholder="https://…" />
