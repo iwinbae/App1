@@ -28,7 +28,7 @@ export default function ShoppingList({ items, dispatch }: Props) {
   return (
     <section>
       <h1>Shopping list</h1>
-      <form className="new-todo" onSubmit={handleSubmit}>
+      <form className="new-todo sticky-add" onSubmit={handleSubmit}>
         <input
           id="shopping-new"
           value={draft}

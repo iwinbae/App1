@@ -27,7 +27,7 @@ export default function Todos() {
     <section>
       <h1>Todos</h1>
 
-      <form className="new-todo" onSubmit={handleSubmit}>
+      <form className="new-todo sticky-add" onSubmit={handleSubmit}>
         <input
           value={draft}
           onChange={(e) => setDraft(e.target.value)}

@@ -17,7 +17,8 @@ type Props = {
 }
 
 /**
- * Type one entry and press Enter (or Add) to append it to the list. Pasting several lines
+ * Type one entry and press Enter (or Add) to append it to the list below. The input sits above
+ * the list so it stays in place as entries are added. Pasting several lines
  * adds them all at once. Each entry can then be edited, moved or removed on its own.
  */
 export default function ListInput({
@@ -79,6 +80,32 @@ export default function ListInput({
     <div className="list-input">
       <label htmlFor={id}>{label}</label>
 
+      <div className="entry-add">
+        <input
+          ref={inputRef}
+          id={id}
+          value={draft}
+          onChange={(e) => onDraftChange(e.target.value)}
+          onKeyDown={handleKeyDown}
+          onPaste={handlePaste}
+          placeholder={placeholder}
+          enterKeyHint="enter"
+          autoComplete="off"
+        />
+        <button
+          type="button"
+          className="secondary"
+          onClick={() => {
+            add(draft)
+            // Keep typing the next entry without tapping the field again.
+            inputRef.current?.focus()
+          }}
+          disabled={!draft.trim()}
+        >
+          Add
+        </button>
+      </div>
+
       {items.length > 0 && (
         <List className={ordered ? 'entries ordered' : 'entries'}>
           {items.map((item, i) => (
@@ -138,32 +165,6 @@ export default function ListInput({
           ))}
         </List>
       )}
-
-      <div className="entry-add">
-        <input
-          ref={inputRef}
-          id={id}
-          value={draft}
-          onChange={(e) => onDraftChange(e.target.value)}
-          onKeyDown={handleKeyDown}
-          onPaste={handlePaste}
-          placeholder={placeholder}
-          enterKeyHint="enter"
-          autoComplete="off"
-        />
-        <button
-          type="button"
-          className="secondary"
-          onClick={() => {
-            add(draft)
-            // Keep typing the next entry without tapping the field again.
-            inputRef.current?.focus()
-          }}
-          disabled={!draft.trim()}
-        >
-          Add
-        </button>
-      </div>
     </div>
   )
 }

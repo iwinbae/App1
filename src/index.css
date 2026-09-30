@@ -60,6 +60,17 @@ h1 { margin: 0 0 24px; font-size: 2rem; }
 
 .new-todo { display: flex; gap: 8px; }
 
+/* The add field stays pinned at the top while a long list scrolls underneath. */
+.sticky-add {
+  position: sticky;
+  top: env(safe-area-inset-top, 0px);
+  z-index: 1;
+  margin-inline: -16px;
+  padding: 12px 16px;
+  background: var(--bg);
+  border-bottom: 1px solid transparent;
+}
+
 .new-todo input,
 .edit {
   flex: 1;
