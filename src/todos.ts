@@ -40,23 +40,3 @@ export function filterTodos(todos: Todo[], filter: Filter): Todo[] {
   if (filter === 'done') return todos.filter((t) => t.done)
   return todos
 }
-
-const STORAGE_KEY = 'app1.todos'
-
-export function loadTodos(): Todo[] {
-  try {
-    const raw = localStorage.getItem(STORAGE_KEY)
-    const parsed: unknown = raw ? JSON.parse(raw) : []
-    return Array.isArray(parsed) ? (parsed as Todo[]) : []
-  } catch {
-    return []
-  }
-}
-
-export function saveTodos(todos: Todo[]): void {
-  try {
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(todos))
-  } catch {
-    // Storage full or unavailable (e.g. private mode): keep working in memory.
-  }
-}
